@@ -1,0 +1,27 @@
+# Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+
+# VS Code and virtual environments
+.vscode/
+.env/
+venv/
+.env.bak/
+venv.bak/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data and chart outputs (user-generated)
+data/expenses.csv
+charts/
+
+# Backup or temporary files
+*.tmp
+*.bak
+*.swp

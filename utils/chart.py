@@ -13,7 +13,13 @@ def plot_expense_summary(expenses, output_dir="charts"):
     # Compute totals
     summary = {}
     for e in expenses:
-        summary[e['Category']] = summary.get(e['Category'], 0) + float(e['Amount'])
+        category = e.get('Category') or "Uncategorized"
+        summary[category] = summary.get(category, 0) + float(e.get('Amount') or 0)
+
+    summary = {category: amount for category, amount in summary.items() if amount > 0}
+    if not summary:
+        print("No positive expenses to visualize.")
+        return None
 
     categories = list(summary.keys())
     amounts = list(summary.values())

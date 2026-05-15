@@ -1,6 +1,8 @@
 import csv
 import os
 
+FIELDNAMES = ['Date', 'Category', 'Amount', 'Description']
+
 def load_expenses(file_path):
     """
     Load expenses from a CSV file.
@@ -16,12 +18,17 @@ def load_expenses(file_path):
         with open(file_path, 'r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                # Convert Amount to float
+                if not row:
+                    continue
+
+                cleaned_row = {field: (row.get(field) or "").strip() for field in FIELDNAMES}
+
                 try:
-                    row['Amount'] = float(row['Amount'])
-                except ValueError:
-                    row['Amount'] = 0.0
-                expenses.append(row)
+                    cleaned_row['Amount'] = float(cleaned_row['Amount'])
+                except (TypeError, ValueError):
+                    cleaned_row['Amount'] = 0.0
+
+                expenses.append(cleaned_row)
     except Exception as e:
         print(f"Error loading file: {e}")
     return expenses
@@ -33,12 +40,13 @@ def save_expenses(file_path, expenses):
     Each expense should be a dictionary with:
     Date, Category, Amount, Description
     """
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    directory = os.path.dirname(file_path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
     
     try:
         with open(file_path, 'w', newline='', encoding='utf-8') as file:
-            fieldnames = ['Date', 'Category', 'Amount', 'Description']
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
             writer.writeheader()
             writer.writerows(expenses)
     except Exception as e:
